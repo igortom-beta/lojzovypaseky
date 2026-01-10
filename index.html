@@ -49,6 +49,47 @@
                 Tato stránka je určena pouze pro interní testování.
             </div>
         </div>
-    </div>
+    </div><div id="ai-chat-container"></div>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel">
+  const AIReservation = () => {
+    const [messages, setMessages] = React.useState([{ id: 1, text: 'Dobrý den! 👋 Jsem asistent pro Lojzovy Paseky. Jak vám mohu pomoci?', sender: 'ai' }]);
+    const [input, setInput] = React.useState('');
+    const [data, setData] = React.useState({});
+
+    const handleSend = (e) => {
+      e.preventDefault();
+      if (!input) return;
+      setMessages([...messages, { id: Date.now(), text: input, sender: 'user' }]);
+      
+      setTimeout(() => {
+        let reply = "Rozumím. Pro kolik osob by to mělo být a na jak dlouho?";
+        if (input.includes('osob')) reply = "Dobře, a na kolik měsíců?";
+        setMessages(prev => [...prev, { id: Date.now()+1, text: reply, sender: 'ai' }]);
+      }, 600);
+      setInput('');
+    };
+
+    return (
+      <div style={{position:'fixed', bottom:'20px', right:'20px', width:'300px', height:'400px', background:'white', border:'2px solid #1a3a5f', borderRadius:'15px', display:'flex', flexDirection:'column', boxShadow:'0 5px 15px rgba(0,0,0,0.2)', zIndex:1000, fontFamily:'sans-serif'}}>
+        <div style={{background:'#1a3a5f', color:'white', padding:'10px', textAlign:'center', fontWeight:'bold', borderTopLeftRadius:'12px', borderTopRightRadius:'12px'}}>Lojzovy Paseky AI</div>
+        <div style={{flex:1, overflowY:'auto', padding:'10px', display:'flex', flexDirection:'column', gap:'10px', background:'#f9f9f9'}}>
+          {messages.map(m => (
+            <div key={m.id} style={{alignSelf: m.sender==='user'?'flex-end':'flex-start', background:m.sender==='user'?'#1a3a5f':'#eee', color:m.sender==='user'?'white':'black', padding:'8px', borderRadius:'10px', fontSize:'13px', maxWidth:'80%'}}>{m.text}</div>
+          ))}
+        </div>
+        <form onSubmit={handleSend} style={{padding:'10px', borderTop:'1px solid #ddd', display:'flex'}}>
+          <input style={{flex:1, border:'1px solid #ccc', borderRadius:'15px', padding:'5px 10px'}} value={input} onChange={e => setInput(e.target.value)} placeholder="Napište nám..." />
+        </form>
+      </div>
+    );
+  };
+
+  const root = ReactDOM.createRoot(document.getElementById('ai-chat-container'));
+  root.render(<AIReservation />);
+</script>
 </body>
 </html>
