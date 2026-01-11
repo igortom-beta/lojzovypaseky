@@ -2,11 +2,7 @@
   "buildCommand": "pnpm build",
   "outputDirectory": "dist",
   "framework": "vite",
-  "env": {
-    "OPENAI_API_KEY": "@openai_api_key",
-    "DATABASE_URL": "@database_url",
-    "JWT_SECRET": "@jwt_secret"
-  },
+
   "functions": {
     "server/**/*.ts": {
       "maxDuration": 60
