@@ -115,7 +115,7 @@
                     
                     const nightsMatch = cleanInput.match(/(\d+)\s*(noc|noci|nocí|dní|dny|den)/i);
                     const guestsMatch = cleanInput.match(/(\d+)\s*(osob|lidi|člověk|osoby|host|hostů)/i);
-                    const dateMatch = cleanInput.match(/(\d+\.\d+\.)|leden|únor|březen|duben|květen|červen|červenec|srpen|září|říjen|listopad|prosinec/i);
+                    const dateMatch = cleanInput.match(/(\d+\.\d+\.)|leden|únor|březen|duben|květen|červen|červenec|srpen|září|říjen|listopad|prosinec|léto|prázdniny|prazdniny|sezón/i);
                     
                     let detectedGuests = guestsMatch ? parseInt(guestsMatch[1]) : null;
                     if (!detectedGuests) {
@@ -134,7 +134,7 @@
                     const newReservation = {
                         nights: detectedNights || reservation.nights,
                         guests: detectedGuests || reservation.guests,
-                        date: dateMatch ? cleanInput : reservation.date
+                        date: dateMatch ? (reservation.date ? reservation.date + " " + cleanInput : cleanInput) : reservation.date
                     };
 
                     if (pastYearMatch) {
@@ -144,7 +144,7 @@
                         if (newReservation.nights && newReservation.guests) {
                             reply = `Perfektní! Mám vše: pobyt na **${newReservation.nights} nocí** pro **${newReservation.guests} osob**. Mám prověřit volné apartmány pro tento počet?`;
                         } else if (newReservation.date && !newReservation.guests) {
-                            reply = `To zní jako skvělý termín! Pro kolik osob by to mělo být?`;
+                            reply = `Léto a prázdniny u nás jsou kouzelné! 🌲 Pro kolik osob by to mělo být?`;
                         } else if (newReservation.nights && !newReservation.guests) {
                             reply = `Rozumím, pobyt na ${newReservation.nights} nocí. Pro kolik osob by to mělo být?`;
                         } else if (!newReservation.nights && newReservation.guests) {
