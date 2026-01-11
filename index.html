@@ -2,62 +2,51 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lojzovy Paseky - Under Construction</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Lojzovy Paseky - Rezervace</title>
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        .hidden-access { display: none; }
+        body { font-family: sans-serif; margin: 0; background: #f4f7f6; color: #1a3a5f; text-align: center; }
+        .hero { background: #1a3a5f; color: white; padding: 50px 20px; }
+        .btn { background: #28a745; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block; margin-top: 20px; font-size: 20px; }
+        .container { max-width: 800px; margin: auto; padding: 40px; background: white; border-radius: 10px; margin-top: -30px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
     </style>
 </head>
-<body class="bg-stone-900 min-h-screen flex items-center justify-center p-4 text-white">
-    <!-- Veřejná část: Under Construction -->
-    <div id="public-view" class="max-w-2xl w-full text-center space-y-8">
-        <h1 class="text-5xl font-extrabold tracking-tight text-green-500">LOJZOVY PASEKY</h1>
-        <div class="space-y-4">
-            <h2 class="text-2xl font-semibold">Stránky jsou v přípravě</h2>
-            <p class="text-stone-400 text-lg">Pracujeme na tom, abychom vám brzy představili váš nový druhý domov v srdci přírody.</p>
-        </div>
-        <div class="flex justify-center gap-2">
-            <div class="w-3 h-3 bg-green-600 rounded-full animate-bounce"></div>
-            <div class="w-3 h-3 bg-green-600 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-            <div class="w-3 h-3 bg-green-600 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-        </div>
-        <p class="text-stone-500 text-sm pt-12">© 2026 Lojzovy Paseky. Všechna práva vyhrazena.</p>
-        
-        <!-- Skrytý vstup pro testování (aktivuje se kliknutím na tečku v copyrightu) -->
-        <button onclick="showLogin()" class="opacity-0 cursor-default">.</button>
+<body>
+    <div class="hero">
+        <h1>Lojzovy Paseky</h1>
+        <p>Bungalovy u Lipna & Investiční příležitosti</p>
     </div>
-
-    <!-- Skrytá část: Přihlášení do testu -->
-    <div id="login-view" class="hidden max-w-md w-full bg-white rounded-2xl shadow-2xl overflow-hidden border border-stone-200 text-stone-900">
-        <div class="bg-green-800 p-6 text-white text-center">
-            <h1 class="text-2xl font-bold">Interní přístup</h1>
-            <p class="text-green-100 opacity-80 text-sm">Vstup do testovací verze</p>
-        </div>
-        <div class="p-8 space-y-6">
-            <div class="space-y-2">
-                <label class="text-sm font-semibold text-stone-600">Zadejte přístupové heslo:</label>
-                <input type="password" id="password" class="w-full p-3 border border-stone-300 rounded-xl focus:ring-2 focus:ring-green-500 outline-none" placeholder="••••••••">
+    <div class="container">
+        <h2>Rezervace ubytování</h2>
+        <p>Vítejte! Náš AI asistent vpravo dole vám spočítá cenu v Kč i EUR.</p>
+        <a href="mailto:info@lojzovypaseky.life" class="btn">REZERVOVAT TEĎ</a>
+    </div>
+    <div id="ai-chat"></div>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script type="text/babel">
+      const Chat = () => {
+        const [msg, setMsg] = React.useState([{ t: 'Dobrý den! 👋 Jsem AI asistent. Spočítám vám cenu v CZK i EUR. (Mluvím CZ, DE, HR, IT)', s: 'ai' }]);
+        const [val, setVal] = React.useState('');
+        const send = (e) => {
+          e.preventDefault(); if(!val) return;
+          setMsg([...msg, { t: val, s: 'u' }]);
+          setTimeout(() => {
+            setMsg(p => [...p, { t: "Nájem je 24.000 Kč (cca 950 EUR). Pro rezervaci klikněte na zelené tlačítko REZERVOVAT TEĎ!", s: 'ai' }]);
+          }, 600);
+          setVal('');
+        };
+        return (
+          <div style={{position:'fixed', bottom:'20px', right:'20px', width:'300px', height:'400px', background:'white', border:'3px solid #1a3a5f', borderRadius:'15px', display:'flex', flexDirection:'column', boxShadow:'0 10px 25px rgba(0,0,0,0.2)', zIndex:9999}}>
+            <div style={{background:'#1a3a5f', color:'white', padding:'10px', textAlign:'center', fontWeight:'bold'}}>Lojzovky AI</div>
+            <div style={{flex:1, overflowY:'auto', padding:'10px', background:'#f8f9fa', textAlign:'left'}}>
+              {msg.map((m,i) => <div key={i} style={{alignSelf: m.s==='u'?'flex-end':'flex-start', background:m.s==='u'?'#1a3a5f':'#e9ecef', color:m.s==='u'?'white':'black', padding:'8px', borderRadius:'10px', marginBottom:'8px', fontSize:'13px'}}>{m.t}</div>)}
             </div>
-            <button onclick="checkPassword()" class="w-full bg-green-700 hover:bg-green-800 text-white py-3 rounded-xl font-bold transition-all">
-                Vstoupit →
-            </button>
-            <p id="error" class="text-red-500 text-sm text-center hidden">Nesprávné heslo</p>
-        </div>
-    </div>
-
-    <script>
-        function showLogin() {
-            document.getElementById('public-view').classList.add('hidden');
-            document.getElementById('login-view').classList.remove('hidden');
-        }
-
-        function checkPassword() {
-            // Dočasně vypnuto heslo pro usnadnění testování
-            window.location.href = './test-verze-9988xyz/';
-        }
+            <form onSubmit={send} style={{padding:'10px', borderTop:'1px solid #ddd'}}><input style={{width:'90%', padding:'8px', borderRadius:'15px', border:'1px solid #ccc'}} value={val} onChange={e=>setVal(e.target.value)} placeholder="Napište nám..." /></form>
+          </div>
+        );
+      };
+      ReactDOM.createRoot(document.getElementById('ai-chat')).render(<Chat />);
     </script>
 </body>
 </html>
