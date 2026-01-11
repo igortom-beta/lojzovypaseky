@@ -3,86 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lojzovy Paseky - Moderní ubytování v přírodě</title>
+    <title>Lojzovy Paseky - Váš druhý domov</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        body { font-family: 'Inter', sans-serif; font-size: 18px; } /* Zvětšené základní písmo */
         h1, h2, h3 { font-family: 'Playfair Display', serif; }
         .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .nav-link { position: relative; transition: color 0.3s; }
+        .nav-link::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -4px; left: 0; background-color: #22c55e; transition: width 0.3s; }
+        .nav-link:hover::after { width: 100%; }
+        /* Vylepšený scrollbar pro chat */
+        .chat-scroll::-webkit-scrollbar { width: 6px; }
+        .chat-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+        .chat-scroll::-webkit-scrollbar-thumb { background: #22c55e; border-radius: 10px; }
     </style>
 </head>
 <body class="bg-stone-950 text-stone-200 leading-relaxed">
 
-    <!-- Hero Section -->
+    <!-- Navigační Menu (Nové) -->
+    <nav class="fixed top-0 w-full z-50 glass py-6 px-10 flex justify-between items-center">
+        <div class="text-2xl font-black tracking-tighter text-white">LOJZOVY PASEKY</div>
+        <div class="hidden md:flex gap-10 text-sm uppercase tracking-widest font-semibold">
+            <a href="#" class="nav-link text-white">O projektu</a>
+            <a href="#" class="nav-link text-stone-400 hover:text-white">Apartmány</a>
+            <a href="#" class="nav-link text-stone-400 hover:text-white">Lokalita</a>
+            <a href="#" class="nav-link text-stone-400 hover:text-white">Kontakt</a>
+        </div>
+        <button class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-full text-sm font-bold transition-all">Rezervovat</button>
+    </nav>
+
+    <!-- Hero Section (Reálná fotka) -->
     <header class="relative h-screen flex items-center justify-center overflow-hidden">
         <div class="absolute inset-0 z-0">
-            <img src="./images/hero-bungalow-exterior.jpg" alt="Lojzovy Paseky" class="w-full h-full object-cover opacity-40 scale-105 animate-pulse" style="animation-duration: 10s">
-            <div class="absolute inset-0 bg-gradient-to-b from-stone-950/20 via-transparent to-stone-950"></div>
+            <img src="./images/hero-bungalow-exterior.jpg" alt="Lojzovy Paseky" class="w-full h-full object-cover opacity-50 scale-105 animate-pulse" style="animation-duration: 15s">
+            <div class="absolute inset-0 bg-gradient-to-b from-stone-950/40 via-transparent to-stone-950"></div>
         </div>
         
-        <div class="relative z-10 text-center px-4 max-w-4xl">
-            <span class="text-green-500 font-semibold tracking-[0.3em] uppercase text-sm mb-4 block">Váš druhý domov</span>
-            <h1 class="text-6xl md:text-8xl font-black mb-6 text-white">Lojzovy Paseky</h1>
-            <p class="text-xl md:text-2xl font-light text-stone-300 max-w-2xl mx-auto">
-                Kde se moderní architektura potkává s tichem šumavských lesů. Investice do klidu, který trvá.
+        <div class="relative z-10 text-center px-4 max-w-5xl">
+            <span class="text-green-500 font-bold tracking-[0.4em] uppercase text-base mb-6 block">Váš druhý domov v srdci Šumavy</span>
+            <h1 class="text-7xl md:text-9xl font-black mb-8 text-white leading-tight">Lojzovy Paseky</h1>
+            <p class="text-2xl md:text-3xl font-light text-stone-300 max-w-3xl mx-auto leading-relaxed">
+                Kde se moderní architektura potkává s tichem lesů. Investice do klidu, který trvá.
             </p>
         </div>
     </header>
 
-    <!-- Kvalitní texty o modernosti a přírodě -->
-    <main class="max-w-6xl mx-auto px-6 py-24 space-y-32">
+    <!-- Hlavní obsah (Zvětšené písmo + Reálné fotky) -->
+    <main class="max-w-7xl mx-auto px-8 py-32 space-y-48">
         
         <!-- Sekce: Architektura a Modernost -->
-        <section class="grid md:grid-cols-2 gap-16 items-center">
-            <div class="space-y-6">
-                <h2 class="text-4xl font-bold text-white">Moderní komfort bez kompromisů</h2>
-                <p class="text-lg text-stone-400">
-                    Naše bungalovy nejsou jen místem k přespání. Jsou výsledkem precizního designu, který klade důraz na **vzdušnost, světlo a technologickou vyspělost**. Každý detail byl navržen tak, aby vám poskytl maximální pohodlí moderní doby v prostředí, kde lišky dávají dobrou noc.
+        <section class="grid md:grid-cols-2 gap-24 items-center">
+            <div class="space-y-8">
+                <h2 class="text-5xl md:text-6xl font-bold text-white leading-tight">Moderní komfort bez kompromisů</h2>
+                <p class="text-xl md:text-2xl text-stone-400 leading-relaxed">
+                    Naše bungalovy nejsou jen místem k přespání. Jsou výsledkem precizního designu, který klade důraz na **vzdušnost, světlo a technologickou vyspělost**. Každý detail byl navržen tak, aby vám poskytl maximální pohodlí moderní doby.
                 </p>
-                <ul class="space-y-4">
-                    <li class="flex items-start gap-3">
-                        <span class="text-green-500 mt-1">✦</span>
-                        <span>**Chytré technologie:** Intuitivní ovládání vytápění a osvětlení pro váš dokonalý tepelný komfort.</span>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-green-500 mt-1">✦</span>
-                        <span>**Prémiové materiály:** Kombinace přírodního dřeva, kamene a velkoformátového prosklení.</span>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-green-500 mt-1">✦</span>
-                        <span>**Udržitelnost:** Energeticky úsporné řešení, které respektuje okolní ekosystém.</span>
-                    </li>
-                </ul>
+                <div class="grid grid-cols-1 gap-6 text-lg">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-green-900/30 flex items-center justify-center text-green-500 font-bold">✓</div>
+                        <span>**Chytré technologie:** Intuitivní ovládání vytápění a osvětlení.</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-green-900/30 flex items-center justify-center text-green-500 font-bold">✓</div>
+                        <span>**Prémiové materiály:** Přírodní dřevo, kámen a sklo.</span>
+                    </div>
+                </div>
             </div>
-            <div class="rounded-3xl overflow-hidden shadow-2xl shadow-green-900/20">
-                <img src="./images/bungalow-deluxe-interior.jpg" alt="Interiér" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700">
+            <div class="rounded-[2rem] overflow-hidden shadow-2xl shadow-green-900/10 border border-stone-800">
+                <img src="./images/bungalow-deluxe-interior.jpg" alt="Interiér bungalovu" class="w-full h-[600px] object-cover hover:scale-105 transition-transform duration-1000">
             </div>
         </section>
 
         <!-- Sekce: Spojení s přírodou -->
-        <section class="grid md:grid-cols-2 gap-16 items-center md:flex-row-reverse">
-            <div class="md:order-2 space-y-6">
-                <h2 class="text-4xl font-bold text-white">Dialog s krajinou</h2>
-                <p class="text-lg text-stone-400">
-                    V Lojzových Pasekách nekončí váš obývací pokoj zdí. Díky **panoramatickým oknům** se okolní příroda stává součástí interiéru. Ranní káva s výhledem na mlhu nad Lipnem nebo večerní pozorování hvězd přímo z terasy – to je luxus, který se nedá koupit, ale dá se prožít.
+        <section class="grid md:grid-cols-2 gap-24 items-center md:flex-row-reverse">
+            <div class="md:order-2 space-y-8">
+                <h2 class="text-5xl md:text-6xl font-bold text-white leading-tight">Dialog s krajinou</h2>
+                <p class="text-xl md:text-2xl text-stone-400 leading-relaxed">
+                    V Lojzových Pasekách nekončí váš obývací pokoj zdí. Díky **panoramatickým oknům** se okolní příroda stává součástí interiéru. Ranní káva s výhledem na mlhu nad Lipnem – to je luxus, který se nedá koupit, ale dá se prožít.
                 </p>
-                <p class="text-stone-400">
-                    Využili jsme přirozený sklon terénu a orientaci ke světovým stranám, aby každý bungalov nabízel soukromí a zároveň neomezený kontakt s divočinou.
+                <p class="text-lg text-stone-500 italic">
+                    Využili jsme přirozený sklon terénu a orientaci ke světovým stranám pro vaše maximální soukromí.
                 </p>
             </div>
-            <div class="md:order-1 rounded-3xl overflow-hidden shadow-2xl shadow-green-900/20">
-                <img src="./images/sustainable-living.jpg" alt="Příroda" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700">
+            <div class="md:order-1 rounded-[2rem] overflow-hidden shadow-2xl shadow-green-900/10 border border-stone-800">
+                <img src="./images/sustainable-living.jpg" alt="Příroda kolem bungalovů" class="w-full h-[600px] object-cover hover:scale-105 transition-transform duration-1000">
             </div>
         </section>
 
     </main>
 
-    <!-- AI Rezervační systém (Osvědčená logika) -->
+    <!-- AI Rezervační systém (Vylepšený RELEASE) -->
     <div id="ai-chat-root"></div>
 
-    <footer class="py-12 border-t border-stone-800 text-center text-stone-500 text-sm">
-        <p>© 2026 Lojzovy Paseky. Všechna práva vyhrazena.</p>
+    <footer class="py-20 border-t border-stone-900 text-center text-stone-600">
+        <div class="text-xl font-bold text-white mb-4">LOJZOVY PASEKY</div>
+        <p class="max-w-md mx-auto mb-8">Váš druhý domov v srdci Šumavy. Investice do klidu a přírody.</p>
+        <p class="text-sm uppercase tracking-widest">© 2026 Lojzovy Paseky. Všechna práva vyhrazena.</p>
     </footer>
 
     <!-- React & AI Logic -->
@@ -94,8 +111,19 @@
         const AIReservation = () => {
             const [messages, setMessages] = React.useState([{ id: 1, text: 'Dobrý den! 👋 Jsem asistent pro Lojzovy Paseky. Jak vám mohu pomoci s vaší rezervací?', sender: 'ai' }]);
             const [input, setInput] = React.useState('');
-            const [reservation, setReservation] = React.useState({ nights: null, guests: null });
+            const [reservation, setReservation] = React.useState({ nights: null, guests: null, date: null });
             const [isOpen, setIsOpen] = React.useState(true);
+            const [isTyping, setIsTyping] = React.useState(false);
+            const chatEndRef = React.useRef(null);
+
+            // Automatické scrollování dolů (Nové)
+            const scrollToBottom = () => {
+                chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+            };
+
+            React.useEffect(() => {
+                scrollToBottom();
+            }, [messages, isTyping]);
 
             const sanitize = (str) => {
                 const div = document.createElement('div');
@@ -109,13 +137,16 @@
                 
                 const cleanInput = sanitize(input.trim());
                 setMessages(prev => [...prev, { id: Date.now(), text: cleanInput, sender: 'user' }]);
+                setInput('');
+                setIsTyping(true);
                 
                 setTimeout(() => {
+                    setIsTyping(false);
                     let reply = "";
                     
                     const nightsMatch = cleanInput.match(/(\d+)\s*(noc|noci|nocí|dní|dny|den)/i);
                     const guestsMatch = cleanInput.match(/(\d+)\s*(osob|lidi|člověk|osoby|host|hostů)/i);
-                    const dateMatch = cleanInput.match(/(\d+\.\d+\.)|leden|únor|březen|duben|květen|červen|červenec|srpen|září|říjen|listopad|prosinec|léto|prázdniny|prazdniny|sezón|jaro|podzim|zima|přelom|prelom/i);
+                    const dateMatch = cleanInput.match(/(\d+\.\d+\.)|leden|únor|březen|duben|květen|červen|červenec|srpen|září|říjen|listopad|prosinec|léto|prázdniny|prazdniny|sezón|jaro|podzim|zima|přelom/i);
                     
                     let detectedGuests = guestsMatch ? parseInt(guestsMatch[1]) : null;
                     if (!detectedGuests) {
@@ -144,7 +175,7 @@
                         if (newReservation.nights && newReservation.guests) {
                             reply = `Perfektní! Mám vše: pobyt na **${newReservation.nights} nocí** pro **${newReservation.guests} osob**. Mám prověřit volné apartmány pro tento počet?`;
                         } else if (newReservation.date && !newReservation.guests) {
-                            reply = `Léto a prázdniny u nás jsou kouzelné! 🌲 Pro kolik osob by to mělo být?`;
+                            reply = `To zní jako skvělý termín! 🌲 Pro kolik osob by to mělo být?`;
                         } else if (newReservation.nights && !newReservation.guests) {
                             reply = `Rozumím, pobyt na ${newReservation.nights} nocí. Pro kolik osob by to mělo být?`;
                         } else if (!newReservation.nights && newReservation.guests) {
@@ -157,44 +188,53 @@
                     }
 
                     setMessages(prev => [...prev, { id: Date.now() + 1, text: reply, sender: 'ai' }]);
-                }, 600);
-                setInput('');
+                }, 1000);
             };
 
             if (!isOpen) return (
-                <button onClick={() => setIsOpen(true)} style={{position:'fixed', bottom:'20px', right:'20px', background:'#16a34a', color:'white', padding:'15px 25px', borderRadius:'50px', fontWeight:'bold', boxShadow:'0 10px 25px rgba(0,0,0,0.3)', zIndex:1000}}>
+                <button onClick={() => setIsOpen(true)} style={{position:'fixed', bottom:'30px', right:'30px', background:'#16a34a', color:'white', padding:'20px 35px', borderRadius:'50px', fontWeight:'bold', fontSize:'18px', boxShadow:'0 15px 35px rgba(0,0,0,0.4)', zIndex:1000}}>
                     Rezervovat pobyt 💬
                 </button>
             );
 
             return (
-                <div style={{position:'fixed', bottom:'20px', right:'20px', width:'350px', height:'500px', background:'#1c1917', border:'1px solid #444', borderRadius:'24px', display:'flex', flexDirection:'column', boxShadow:'0 20px 50px rgba(0,0,0,0.5)', zIndex:1000, overflow:'hidden'}}>
-                    <div style={{background:'#16a34a', color:'white', padding:'15px 20px', display:'flex', justifyContent:'space-between', alignItems:'center'}}>
-                        <span style={{fontWeight:'bold'}}>Lojzovy Paseky AI</span>
-                        <button onClick={() => setIsOpen(false)} style={{opacity:0.7}}>✕</button>
+                <div style={{position:'fixed', bottom:'30px', right:'30px', width:'400px', height:'600px', background:'#1c1917', border:'1px solid #444', borderRadius:'32px', display:'flex', flexDirection:'column', boxShadow:'0 30px 70px rgba(0,0,0,0.6)', zIndex:1000, overflow:'hidden'}}>
+                    <div style={{background:'#16a34a', color:'white', padding:'20px 25px', display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+                        <div style={{display:'flex', flexDirection:'column'}}>
+                            <span style={{fontWeight:'bold', fontSize:'18px'}}>Lojzovy Paseky AI</span>
+                            <span style={{fontSize:'12px', opacity:0.8}}>Online | Připraven pomoci</span>
+                        </div>
+                        <button onClick={() => setIsOpen(false)} style={{fontSize:'24px', opacity:0.7}}>✕</button>
                     </div>
-                    <div style={{flex:1, overflowY:'auto', padding:'20px', display:'flex', flexDirection:'column', gap:'15px'}}>
+                    <div className="chat-scroll" style={{flex:1, overflowY:'auto', padding:'25px', display:'flex', flexDirection:'column', gap:'20px'}}>
                         {messages.map(m => (
                             <div key={m.id} style={{
                                 alignSelf: m.sender==='user'?'flex-end':'flex-start', 
                                 background:m.sender==='user'?'#16a34a':'#292524', 
                                 color:'white', 
-                                padding:'12px 16px', 
-                                borderRadius:'18px', 
-                                borderBottomRightRadius: m.sender==='user'?'4px':'18px',
-                                borderBottomLeftRadius: m.sender==='user'?'18px':'4px',
-                                fontSize:'14px', 
+                                padding:'16px 20px', 
+                                borderRadius:'22px', 
+                                borderBottomRightRadius: m.sender==='user'?'4px':'22px',
+                                borderBottomLeftRadius: m.sender==='user'?'22px':'4px',
+                                fontSize:'16px', /* Zvětšené písmo v chatu */
                                 maxWidth:'85%',
-                                boxShadow:'0 2px 5px rgba(0,0,0,0.1)'
+                                boxShadow:'0 4px 10px rgba(0,0,0,0.2)',
+                                lineHeight:'1.5'
                             }} dangerouslySetInnerHTML={{__html: m.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}}></div>
                         ))}
+                        {isTyping && (
+                            <div style={{alignSelf:'flex-start', background:'#292524', padding:'12px 20px', borderRadius:'22px', color:'#888', fontSize:'14px'}}>
+                                Asistent píše...
+                            </div>
+                        )}
+                        <div ref={chatEndRef} />
                     </div>
-                    <form onSubmit={handleSend} style={{padding:'15px', background:'#292524', borderTop:'1px solid #444'}}>
+                    <form onSubmit={handleSend} style={{padding:'20px', background:'#292524', borderTop:'1px solid #444'}}>
                         <input 
-                            style={{width:'100%', background:'#1c1917', border:'1px solid #444', borderRadius:'12px', padding:'10px 15px', color:'white', outline:'none'}} 
+                            style={{width:'100%', background:'#1c1917', border:'1px solid #444', borderRadius:'16px', padding:'15px 20px', color:'white', outline:'none', fontSize:'16px'}} 
                             value={input} 
                             onChange={e => setInput(e.target.value)} 
-                            placeholder="Napište nám..." 
+                            placeholder="Napište nám termín nebo počet osob..." 
                         />
                     </form>
                 </div>
