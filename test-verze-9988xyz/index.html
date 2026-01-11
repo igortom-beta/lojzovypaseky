@@ -115,6 +115,7 @@
                     
                     const nightsMatch = cleanInput.match(/(\d+)\s*(noc|noci|nocí|dní|dny|den)/i);
                     const guestsMatch = cleanInput.match(/(\d+)\s*(osob|lidi|člověk|osoby|host|hostů)/i);
+                    const dateMatch = cleanInput.match(/(\d+\.\d+\.)|leden|únor|březen|duben|květen|červen|červenec|srpen|září|říjen|listopad|prosinec/i);
                     
                     let detectedGuests = guestsMatch ? parseInt(guestsMatch[1]) : null;
                     if (!detectedGuests) {
@@ -125,19 +126,23 @@
                     let detectedNights = nightsMatch ? parseInt(nightsMatch[1]) : null;
                     if (!detectedNights && cleanInput.match(/týden|na týden/i)) detectedNights = 7;
                     if (!detectedNights && cleanInput.match(/víkend/i)) detectedNights = 2;
+                    if (!detectedNights && cleanInput.match(/léto|sezónu|sezona/i)) detectedNights = 90;
 
                     const newReservation = {
                         nights: detectedNights || reservation.nights,
-                        guests: detectedGuests || reservation.guests
+                        guests: detectedGuests || reservation.guests,
+                        date: dateMatch ? cleanInput : reservation.date
                     };
                     setReservation(newReservation);
 
                     if (newReservation.nights && newReservation.guests) {
                         reply = `Perfektní! Mám vše: pobyt na **${newReservation.nights} nocí** pro **${newReservation.guests} osob**. Mám prověřit volné apartmány pro tento počet?`;
+                    } else if (newReservation.date && !newReservation.guests) {
+                        reply = `To zní jako skvělý termín! Pro kolik osob by to mělo být?`;
                     } else if (newReservation.nights && !newReservation.guests) {
                         reply = `Rozumím, pobyt na ${newReservation.nights} nocí. Pro kolik osob by to mělo být?`;
                     } else if (!newReservation.nights && newReservation.guests) {
-                        reply = `Dobře, počítám s ${newReservation.guests} osobami. Na jak dlouho (kolik nocí) plánujete přijet?`;
+                        reply = `Dobře, počítám s ${newReservation.guests} osobami. Na jak dlouho (kolik nocí) nebo na jaký termín plánujete přijet?`;
                     } else if (cleanInput.toLowerCase().includes('cena') || cleanInput.toLowerCase().includes('kolik stojí')) {
                         reply = "Ceny začínají od 2 500 Kč za noc (Apartmán 3+kk) nebo 3 800 Kč (Apartmán 4+kk). Pro přesnou kalkulaci mi prosím napište počet osob a nocí.";
                     } else {
