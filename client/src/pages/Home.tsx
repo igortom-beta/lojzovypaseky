@@ -18,6 +18,7 @@ import { AIReservationWidget } from "@/components/AIReservationWidget";
 export default function HomePage() {
   const { language, setLanguage, variant, setVariant } = useLanguage();
   const t = translations[language][variant];
+  const [introVideoSkipped, setIntroVideoSkipped] = useState(false);
   const [activeTab, setActiveTab] = useState("features");
 
   return (
@@ -100,16 +101,23 @@ export default function HomePage() {
       </nav>
 
       {/* Intro Video Section */}
-      <section className="relative w-full h-screen overflow-hidden bg-black">
-        <video
-          autoPlay
-          muted
-          playsInline
-          className="w-full h-full object-cover"
-        >
-          <source src="/videos/video-uvod.mp4" type="video/mp4" />
-        </video>
-      </section>
+      {!introVideoSkipped && (
+        <section className="relative w-full h-screen overflow-hidden bg-black">
+          <iframe
+            src="https://www.youtube.com/embed/PsXYZvNvlw8?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1"
+            allow="autoplay; encrypted-media"
+            allowFullScreen
+            className="absolute top-0 left-0 w-full h-full pointer-events-none"
+            style={{ border: 'none', transform: 'scale(1.5)' }}
+          />
+          <button
+            onClick={() => setIntroVideoSkipped(true)}
+            className="absolute top-8 right-8 z-50 px-6 py-3 bg-white/90 hover:bg-white text-black font-semibold rounded-full transition-all duration-300 hover:scale-105"
+          >
+            {language === 'cs' ? 'Přeskočit' : language === 'de' ? 'Überspringen' : 'Skip'}
+          </button>
+        </section>
+      )}
 
       {/* Hero Section - Asymmetric Layout */}
       <section className="relative overflow-hidden bg-[#F5F1E8]">
@@ -171,16 +179,15 @@ export default function HomePage() {
             {variant === "families" ? "Poznáte náš projekt" : "Objevte náš projekt"}
           </h2>
           <div className="max-w-4xl mx-auto rounded-xl overflow-hidden shadow-lg">
-            <video
-              width="100%"
-              height="auto"
-              controls
-              className="w-full h-auto"
-              poster="/images/hero-family-nature.jpg"
-            >
-              <source src="/videos/complete-video-final.mp4" type="video/mp4" />
-              Váš prohlížeč nepodporuje video element.
-            </video>
+            <div className="relative" style={{ paddingBottom: '56.25%' }}>
+              <iframe
+                src="https://www.youtube.com/embed/EF7Eq0op35w"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="absolute top-0 left-0 w-full h-full"
+                style={{ border: 'none' }}
+              />
+            </div>
           </div>
           <p className="text-center text-gray-600 mt-6 max-w-2xl mx-auto">
             {variant === "families"
