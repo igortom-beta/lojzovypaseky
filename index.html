@@ -60,15 +60,37 @@
     const [input, setInput] = React.useState('');
     const [data, setData] = React.useState({});
 
+    const sanitize = (str) => {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    };
+
     const handleSend = (e) => {
       e.preventDefault();
-      if (!input) return;
-      setMessages([...messages, { id: Date.now(), text: input, sender: 'user' }]);
+      if (!input.trim()) return;
+      
+      const cleanInput = sanitize(input.trim());
+      const newMessages = [...messages, { id: Date.now(), text: cleanInput, sender: 'user' }];
+      setMessages(newMessages);
       
       setTimeout(() => {
-        let reply = "Rozumím. Pro kolik osob by to mělo být a na jak dlouho?";
-        if (input.includes('osob')) reply = "Dobře, a na kolik měsíců?";
-        setMessages(prev => [...prev, { id: Date.now()+1, text: reply, sender: 'ai' }]);
+        let reply = "Děkuji za zprávu. Jak vám mohu pomoci s rezervací v Lojzových Pasekách?";
+        
+        const nightsMatch = cleanInput.match(/(\d+)\s*(noc|noci|nocí)/i);
+        const guestsMatch = cleanInput.match(/(\d+)\s*(osob|lidi|člověk|lidi)/i);
+        
+        if (nightsMatch && guestsMatch) {
+          reply = `Skvělé! Zaznamenal jsem zájem o ${nightsMatch[1]} nocí pro ${guestsMatch[1]} osob. Chcete prověřit dostupnost?`;
+        } else if (nightsMatch) {
+          reply = `Rozumím, ${nightsMatch[1]} nocí. Pro kolik osob by to mělo být?`;
+        } else if (guestsMatch) {
+          reply = `Dobře, ${guestsMatch[1]} osob. Na jak dlouho plánujete pobyt?`;
+        } else if (cleanInput.toLowerCase().includes('cena') || cleanInput.toLowerCase().includes('kolik stojí')) {
+          reply = "Ceny začínají od 2 500 Kč za noc pro apartmán 3+kk. Máte zájem o konkrétní termín?";
+        }
+
+        setMessages(prev => [...prev, { id: Date.now() + 1, text: reply, sender: 'ai' }]);
       }, 600);
       setInput('');
     };
