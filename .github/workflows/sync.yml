@@ -1,0 +1,21 @@
+name: Sync Mirror
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'test-verze-9988xyz/**'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Log Sync
+        run: |
+          echo "Změny v testovací verzi byly detekovány a jsou automaticky dostupné v zrcadle."
+          # Zde by mohly být další kroky pro build nebo deploy, pokud by to bylo potřeba.
+          # V aktuálním nastavení GitHub Pages se vše v 'main' větvi publikuje automaticky.
