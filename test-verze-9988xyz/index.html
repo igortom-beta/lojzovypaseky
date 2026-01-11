@@ -115,7 +115,7 @@
                     
                     const nightsMatch = cleanInput.match(/(\d+)\s*(noc|noci|nocí|dní|dny|den)/i);
                     const guestsMatch = cleanInput.match(/(\d+)\s*(osob|lidi|člověk|osoby|host|hostů)/i);
-                    const dateMatch = cleanInput.match(/(\d+\.\d+\.)|leden|únor|březen|duben|květen|červen|červenec|srpen|září|říjen|listopad|prosinec|léto|prázdniny|prazdniny|sezón/i);
+                    const dateMatch = cleanInput.match(/(\d+\.\d+\.)|leden|únor|březen|duben|květen|červen|červenec|srpen|září|říjen|listopad|prosinec|léto|prázdniny|prazdniny|sezón|jaro|podzim|zima|přelom|prelom/i);
                     
                     let detectedGuests = guestsMatch ? parseInt(guestsMatch[1]) : null;
                     if (!detectedGuests) {
