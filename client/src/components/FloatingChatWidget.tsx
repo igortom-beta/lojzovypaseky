@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, X, MessageCircle } from 'lucide-react';
+import { Send, X, MessageCircle, Mic, MicOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
@@ -15,7 +15,7 @@ export function FloatingChatWidget() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [detectedLanguage, setDetectedLanguage] = useState('cs');
+  const [isListening, setIsListening] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -26,19 +26,30 @@ export function FloatingChatWidget() {
     scrollToBottom();
   }, [messages]);
 
-  const detectLanguage = (text: string): string => {
-    const languageKeywords: Record<string, string[]> = {
-      cs: ['ahoj', 'jak', 'co', 'kde', 'kdy', 'proč', 'cena', 'nájem', 'bungalov', 'pronájem', 'rezervace', 'kolik', 'stojí', 'měsíc'],
-      de: ['wie', 'was', 'wo', 'wann', 'warum', 'bungalow', 'miete', 'preis', 'kosten', 'monat', 'reservierung', 'buchung'],
-      en: ['how', 'what', 'where', 'when', 'why', 'bungalow', 'rent', 'price', 'cost', 'month', 'booking', 'reservation'],
+  // Hlasové diktování
+  const toggleListening = () => {
+    if (!('webkitSpeechRecognition' in window) && !('speechRecognition' in window)) {
+      alert('Váš prohlížeč nepodporuje diktování hlasem.');
+      return;
+    }
+
+    const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).speechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'cs-CZ';
+    recognition.continuous = false;
+
+    recognition.onstart = () => setIsListening(true);
+    recognition.onend = () => setIsListening(false);
+    recognition.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      setInputValue(prev => prev + ' ' + transcript);
     };
-    const lowerText = text.toLowerCase();
-    const scores: Record<string, number> = { cs: 0, de: 0, en: 0 };
-    Object.entries(languageKeywords).forEach(([lang, words]) => {
-      words.forEach(word => { if (lowerText.includes(word)) scores[lang]++; });
-    });
-    const maxScore = Math.max(...Object.values(scores));
-    return maxScore > 0 ? Object.keys(scores).find(key => scores[key] === maxScore) || 'cs' : 'cs';
+
+    if (isListening) {
+      recognition.stop();
+    } else {
+      recognition.start();
+    }
   };
 
   const handleSendMessage = async (e: React.FormEvent) => {
@@ -46,32 +57,20 @@ export function FloatingChatWidget() {
     if (!inputValue.trim()) return;
 
     const userMessage = inputValue;
-    const language = detectLanguage(userMessage);
-    setDetectedLanguage(language);
-    
-    const newMessages: Message[] = [...messages, { role: 'user', content: userMessage }];
-    setMessages(newMessages);
+    setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
     setInputValue('');
     setIsLoading(true);
 
     try {
-      const systemPrompt = `Jsi asistent pro projekt Lojzovy Paseky na Lipně. 
-      Cena nájmu: 24 000 Kč/měsíc. Kauce: 48 000 Kč. 
-      Lokalita: Lojzovy Paseky, Lipno nad Vltavou. 
-      Kontakt: info@lojzovypaseky.life. 
-      Buď milý, profesionální a odpovídej v jazyce uživatele.`;
-
+      const systemPrompt = `Jsi asistent pro projekt Lojzovy Paseky na Lipně. Cena nájmu: 24 000 Kč/měsíc. Kontakt: info@lojzovypaseky.life. Odpovídej stručně a profesionálně.`;
       const apiKey = "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";
       
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
-        },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
         body: JSON.stringify({
           model: "gpt-4o-mini",
-          messages: [{ role: 'system', content: systemPrompt }, ...newMessages],
+          messages: [{ role: 'system', content: systemPrompt }, ...messages, { role: 'user', content: userMessage }],
           temperature: 0.7
         } )
       });
@@ -79,7 +78,7 @@ export function FloatingChatWidget() {
       const data = await response.json();
       setMessages(prev => [...prev, { role: 'assistant', content: data.choices[0].message.content }]);
     } catch (error) {
-      setMessages(prev => [...prev, { role: 'assistant', content: 'Omlouvám se, došlo k chybě.' }]);
+      setMessages(prev => [...prev, { role: 'assistant', content: 'Chyba připojení.' }]);
     } finally {
       setIsLoading(false);
     }
@@ -103,11 +102,13 @@ export function FloatingChatWidget() {
                 </div>
               </div>
             ))}
-            {isLoading && <div className="flex justify-start"><div className="bg-white p-2 rounded-lg border border-gray-200">...</div></div>}
             <div ref={messagesEndRef} />
           </div>
-          <form onSubmit={handleSendMessage} className="border-t border-gray-100 p-4 bg-white flex gap-2">
-            <Input value={inputValue} onChange={(e) => setInputValue(e.target.value)} placeholder="Napište nám..." className="flex-1" disabled={isLoading} />
+          <form onSubmit={handleSendMessage} className="border-t border-gray-100 p-4 bg-white flex gap-2 items-center">
+            <Button type="button" onClick={toggleListening} className={`p-2 rounded-full ${isListening ? 'bg-red-500 animate-pulse' : 'bg-gray-200 text-gray-600'}`}>
+              {isListening ? <MicOff size={18} /> : <Mic size={18} />}
+            </Button>
+            <Input value={inputValue} onChange={(e) => setInputValue(e.target.value)} placeholder="Napište nebo diktujte..." className="flex-1" disabled={isLoading} />
             <Button type="submit" disabled={isLoading || !inputValue.trim()} className="bg-[#22c55e] hover:bg-[#16a34a] text-white"><Send size={18} /></Button>
           </form>
         </Card>
