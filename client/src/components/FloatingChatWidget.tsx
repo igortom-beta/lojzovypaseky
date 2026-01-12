@@ -14,8 +14,7 @@ export function FloatingChatWidget() {
   const messagesEndRef = useRef(null);
 
   // Bezpečné složení klíče, aby ho roboti hned nesežrali
-  const p1 = "sk-proj-tfiF-AliTBXStROEq0xC0mpDKPsP_cnZ6hOdFtzJfj8pSqglQgOTZiwH3MjVnTRUayG2-0wCjsT3";
-  const p2 = "BlbkFJ6oS0whZ4-YiXLgZKyrWeEM2WVTKZ4RlLQzASCz052qWLp9hrYF4cGtZrk4g3xiN9We42UZq7MA";
+  const apiKey = import.meta.env.VITE_OPENAI_API_KEY || "";
   const apiKey = p1 + p2;
 
   const toggleListening = () => {
