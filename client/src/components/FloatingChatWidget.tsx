@@ -62,7 +62,7 @@ export function FloatingChatWidget() {
     try {
       const systemPrompt = `Jsi asistent pro projekt Lojzovy Paseky na Lipně. Cena nájmu: 24 000 Kč/měsíc. Kontakt: info@lojzovypaseky.life. Odpovídej stručně a profesionálně.`;
       // VLOŽENÝ KLÍČ NATVRDO PRO OKAMŽITOU FUNKČNOST
-      const apiKey = "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";
+      const apiKey = import.meta.env.VITE_OPENAI_API_KEY || "";
       
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
