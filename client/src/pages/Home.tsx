@@ -2,34 +2,32 @@ import { FloatingChatWidget } from "../components/FloatingChatWidget";
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex flex-col bg-white">
-      {/* 1. TVŮJ PŮVODNÍ DESIGN (Tady zůstává vše, co jsi tam měl) */}
-      <main className="flex-1">
-        <div className="container mx-auto px-4 py-8">
-          <h1 className="text-4xl font-bold mb-4 text-blue-900">Lojzovy Paseky</h1>
-          <p className="text-xl text-gray-700 mb-8">Luxusní ubytování u Lipna</p>
-          
-          {/* SEM MŮŽEŠ POZDĚJI VLOŽIT SVÉ FOTKY A DALŠÍ SEKCE */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-gray-100 p-6 rounded-lg shadow-md">
-              <h2 className="text-2xl font-semibold mb-2">Bungalov A</h2>
-              <p>Ideální pro rodiny s dětmi.</p>
-            </div>
-            <div className="bg-gray-100 p-6 rounded-lg shadow-md">
-              <h2 className="text-2xl font-semibold mb-2">Bungalov B</h2>
-              <p>Soukromí a klid v přírodě.</p>
-            </div>
-          </div>
-        </div>
-      </main>
-
-      {/* 2. TVŮJ NOVÝ ASISTENT (To zelené tlačítko v rohu) */}
-      <FloatingChatWidget />
+    <div style={{ backgroundColor: '#f4f7f6', minHeight: '100vh', color: '#1a3a5f', fontFamily: 'sans-serif', textAlign: 'center' }}>
+      {/* Tvůj Hero panel */}
+      <div style={{ background: '#1a3a5f', color: 'white', padding: '50px 20px' }}>
+        <h1 style={{ fontSize: '2.5em', marginBottom: '10px' }}>Lojzovy Paseky</h1>
+        <p style={{ fontSize: '1.2em', opacity: 0.9 }}>Bungalovy u Lipna & Investiční příležitosti</p>
+      </div>
       
-      {/* 3. PATIČKA */}
-      <footer className="bg-blue-900 text-white p-4 text-center">
-        <p>© 2025 Lojzovy Paseky - Milovice nad Labem & Lipno</p>
-      </footer>
+      {/* Tvůj bílý kontejner */}
+      <div style={{ maxWidth: '800px', margin: '-30px auto 40px', padding: '40px', background: 'white', borderRadius: '10px', boxShadow: '0 4px 15px rgba(0,0,0,0.1)' }}>
+        <h2 style={{ marginBottom: '15px' }}>Rezervace ubytování</h2>
+        <p style={{ marginBottom: '20px', lineHeight: '1.6' }}>
+          Vítejte! Náš AI asistent vpravo dole vám spočítá cenu v Kč i EUR.
+        </p>
+        <a href="mailto:info@lojzovypaseky.life" style={{ background: '#28a745', color: 'white', padding: '15px 30px', textDecoration: 'none', borderRadius: '5px', fontWeight: 'bold', display: 'inline-block', fontSize: '20px', boxShadow: '0 4px 10px rgba(0,0,0,0.2)' }}>
+          REZERVOVAT TEĎ
+        </a>
+      </div>
+
+      {/* Nový asistent s tvými bublinami */}
+      <FloatingChatWidget 
+        suggestions={[
+          "Kolik stojí měsíční nájem?",
+          "Jaký je kurz EUR/CZK?",
+          "Chci si domluvit prohlídku"
+        ]}
+      />
     </div>
   );
 }
