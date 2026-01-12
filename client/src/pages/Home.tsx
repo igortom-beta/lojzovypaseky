@@ -1,9 +1,57 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import { Volume2, VolumeX } from "lucide-react";
 import { FloatingChatWidget } from "../components/FloatingChatWidget";
 
 export default function Home() {
+  const [isMuted, setIsMuted] = useState(true);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  useEffect(() => {
+    const handleFirstInteraction = () => {
+      if (audioRef.current && isMuted) {
+        audioRef.current.play().catch(e => console.log("Audio play blocked", e));
+        setIsMuted(false);
+      }
+      window.removeEventListener('click', handleFirstInteraction);
+    };
+    window.addEventListener('click', handleFirstInteraction);
+    return () => window.removeEventListener('click', handleFirstInteraction);
+  }, [isMuted]);
+
+  const toggleMute = () => {
+    if (audioRef.current) {
+      audioRef.current.muted = !audioRef.current.muted;
+      setIsMuted(audioRef.current.muted);
+    }
+  };
+
   return (
     <div style={{ backgroundColor: '#0a0f16', minHeight: '100vh', color: '#ffffff', fontFamily: 'sans-serif' }}>
+      <audio ref={audioRef} src="/morning-mood.mp3" loop />
+      
+      {/* Audio Toggle Button */}
+      <button 
+        onClick={toggleMute}
+        style={{
+          position: 'fixed',
+          bottom: '20px',
+          left: '20px',
+          zIndex: 1000,
+          background: 'rgba(34, 197, 94, 0.2)',
+          border: '1px solid #22c55e',
+          color: '#22c55e',
+          padding: '10px',
+          borderRadius: '50%',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backdropFilter: 'blur(5px)'
+        }}
+      >
+        {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+      </button>
+
       {/* Navigation Bar */}
       <nav style={{
         position: 'fixed',
