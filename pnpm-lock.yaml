@@ -244,7 +244,7 @@ importers:
         specifier: ^0.25.0
         version: 0.25.12
       pnpm:
-        specifier: 9.15.4
+        specifier: 9.15.4+sha512.c753b6c3ad7afa13af388fa6d808035a008e30ea9993f58c6663e2bc5ff21679aa834db094987129aa4d488b86df57f7b634981b2f827cdcacc698cc0cfb88af
         version: 9.15.4
       postcss:
         specifier: ^8.4.47
