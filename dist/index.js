@@ -668,7 +668,7 @@ async function invokeLLM(params) {
     response_format
   } = params;
   const payload = {
-    model: "gemini-2.5-flash",
+    model: "gpt-4.1-mini",
     messages: messages.map(normalizeMessage)
   };
   if (tools && tools.length > 0) {
@@ -681,10 +681,7 @@ async function invokeLLM(params) {
   if (normalizedToolChoice) {
     payload.tool_choice = normalizedToolChoice;
   }
-  payload.max_tokens = 32768;
-  payload.thinking = {
-    "budget_tokens": 128
-  };
+  payload.max_tokens = 4096;
   const normalizedResponseFormat = normalizeResponseFormat({
     responseFormat,
     response_format,
