@@ -26,18 +26,15 @@ export function FloatingChatWidget() {
     scrollToBottom();
   }, [messages]);
 
-  // Hlasové diktování
   const toggleListening = () => {
-    if (!('webkitSpeechRecognition' in window) && !('speechRecognition' in window)) {
+    const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).speechRecognition;
+    if (!SpeechRecognition) {
       alert('Váš prohlížeč nepodporuje diktování hlasem.');
       return;
     }
 
-    const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).speechRecognition;
     const recognition = new SpeechRecognition();
     recognition.lang = 'cs-CZ';
-    recognition.continuous = false;
-
     recognition.onstart = () => setIsListening(true);
     recognition.onend = () => setIsListening(false);
     recognition.onresult = (event: any) => {
@@ -57,12 +54,14 @@ export function FloatingChatWidget() {
     if (!inputValue.trim()) return;
 
     const userMessage = inputValue;
-    setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+    const newMessages: Message[] = [...messages, { role: 'user', content: userMessage }];
+    setMessages(newMessages);
     setInputValue('');
     setIsLoading(true);
 
     try {
       const systemPrompt = `Jsi asistent pro projekt Lojzovy Paseky na Lipně. Cena nájmu: 24 000 Kč/měsíc. Kontakt: info@lojzovypaseky.life. Odpovídej stručně a profesionálně.`;
+      // VLOŽENÝ KLÍČ NATVRDO PRO OKAMŽITOU FUNKČNOST
       const apiKey = "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";
       
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -70,15 +69,17 @@ export function FloatingChatWidget() {
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
         body: JSON.stringify({
           model: "gpt-4o-mini",
-          messages: [{ role: 'system', content: systemPrompt }, ...messages, { role: 'user', content: userMessage }],
+          messages: [{ role: 'system', content: systemPrompt }, ...newMessages],
           temperature: 0.7
         } )
       });
 
       const data = await response.json();
+      if (data.error) throw new Error(data.error.message);
       setMessages(prev => [...prev, { role: 'assistant', content: data.choices[0].message.content }]);
     } catch (error) {
-      setMessages(prev => [...prev, { role: 'assistant', content: 'Chyba připojení.' }]);
+      console.error(error);
+      setMessages(prev => [...prev, { role: 'assistant', content: 'Omlouvám se, došlo k chybě připojení k AI.' }]);
     } finally {
       setIsLoading(false);
     }
