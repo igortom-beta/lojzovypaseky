@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Volume2, VolumeX, ChevronLeft, ChevronRight } from "lucide-react";
+import { Volume2, VolumeX, ChevronLeft, ChevronRight, MessageCircle, Send, Mic, MicOff } from "lucide-react";
 import { FloatingChatWidget } from "../components/FloatingChatWidget";
 
 const galleryImages = [
@@ -14,11 +14,28 @@ const galleryImages = [
 export default function Home() {
   const [isMuted, setIsMuted] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [showPassword, setShowPassword] = useState(true);
+  const [password, setPassword] = useState("");
   const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
+    const savedAuth = localStorage.getItem("lojza_auth");
+    if (savedAuth === "true") setShowPassword(false);
+  }, []);
+
+  const handlePassword = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (password === "Sekaneseka3") {
+      setShowPassword(false);
+      localStorage.setItem("lojza_auth", "true");
+    } else {
+      alert("Nesprávné heslo");
+    }
+  };
+
+  useEffect(() => {
     const handleFirstInteraction = () => {
-      if (audioRef.current && isMuted) {
+      if (audioRef.current && isMuted && !showPassword) {
         audioRef.current.play().catch(e => console.log("Audio play blocked", e));
         setIsMuted(false);
       }
@@ -26,7 +43,7 @@ export default function Home() {
     };
     window.addEventListener('click', handleFirstInteraction);
     return () => window.removeEventListener('click', handleFirstInteraction);
-  }, [isMuted]);
+  }, [isMuted, showPassword]);
 
   const toggleMute = () => {
     if (audioRef.current) {
@@ -37,6 +54,25 @@ export default function Home() {
 
   const nextImage = () => setCurrentImageIndex((prev) => (prev + 1) % galleryImages.length);
   const prevImage = () => setCurrentImageIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length);
+
+  if (showPassword) {
+    return (
+      <div style={{ height: '100vh', backgroundColor: '#0a0f16', display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'white', fontFamily: 'serif' }}>
+        <form onSubmit={handlePassword} style={{ textAlign: 'center', padding: '40px', border: '1px solid #22c55e', borderRadius: '15px', background: 'rgba(34, 197, 94, 0.05)' }}>
+          <h2 style={{ marginBottom: '20px', letterSpacing: '2px' }}>SOUKROMÁ ZÓNA</h2>
+          <input 
+            type="password" 
+            value={password} 
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Zadejte heslo"
+            style={{ padding: '10px 20px', borderRadius: '20px', border: '1px solid #22c55e', background: 'transparent', color: 'white', marginBottom: '20px', width: '200px', textAlign: 'center' }}
+          />
+          <br />
+          <button type="submit" style={{ background: '#22c55e', color: 'white', border: 'none', padding: '10px 30px', borderRadius: '20px', cursor: 'pointer', fontWeight: 'bold' }}>VSTOUPIT</button>
+        </form>
+      </div>
+    );
+  }
 
   return (
     <div style={{ backgroundColor: '#0a0f16', minHeight: '100vh', color: '#ffffff', fontFamily: 'serif' }}>
