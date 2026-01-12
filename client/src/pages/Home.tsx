@@ -1,9 +1,19 @@
 import { useState, useRef, useEffect } from "react";
-import { Volume2, VolumeX } from "lucide-react";
+import { Volume2, VolumeX, ChevronLeft, ChevronRight } from "lucide-react";
 import { FloatingChatWidget } from "../components/FloatingChatWidget";
+
+const galleryImages = [
+  "/images/frame_0125.jpg", "/images/frame_0129.jpg", "/images/frame_0132.jpg",
+  "/images/frame_0153.jpg", "/images/frame_0154.jpg", "/images/frame_0155.jpg",
+  "/images/frame_0156.jpg", "/images/frame_0157.jpg", "/images/frame_0159.jpg",
+  "/images/frame_0160.jpg", "/images/frame_0161.jpg", "/images/frame_0162.jpg",
+  "/images/frame_0163.jpg", "/images/frame_0164.jpg", "/images/frame_0165.jpg",
+  "/images/frame_0166.jpg", "/images/frame_0167.jpg", "/images/frame_0170.jpg"
+];
 
 export default function Home() {
   const [isMuted, setIsMuted] = useState(true);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
@@ -25,8 +35,11 @@ export default function Home() {
     }
   };
 
+  const nextImage = () => setCurrentImageIndex((prev) => (prev + 1) % galleryImages.length);
+  const prevImage = () => setCurrentImageIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length);
+
   return (
-    <div style={{ backgroundColor: '#0a0f16', minHeight: '100vh', color: '#ffffff', fontFamily: 'sans-serif' }}>
+    <div style={{ backgroundColor: '#0a0f16', minHeight: '100vh', color: '#ffffff', fontFamily: 'serif' }}>
       <audio ref={audioRef} src="/morning-mood.mp3" loop />
       
       {/* Audio Toggle Button */}
@@ -72,10 +85,10 @@ export default function Home() {
         </div>
         
         <div style={{ display: 'flex', gap: '30px', alignItems: 'center' }}>
-          <a href="#about" style={{ color: 'white', textDecoration: 'none', fontSize: '13px', opacity: 0.7, transition: 'opacity 0.3s' }}>O PROJEKTU</a>
-          <a href="#apartments" style={{ color: 'white', textDecoration: 'none', fontSize: '13px', opacity: 0.7, transition: 'opacity 0.3s' }}>APARTMÁNY</a>
-          <a href="#location" style={{ color: 'white', textDecoration: 'none', fontSize: '13px', opacity: 0.7, transition: 'opacity 0.3s' }}>LOKALITA</a>
-          <a href="#contact" style={{ color: 'white', textDecoration: 'none', fontSize: '13px', opacity: 0.7, transition: 'opacity 0.3s' }}>KONTAKT</a>
+          <a href="#about" style={{ color: 'white', textDecoration: 'none', fontSize: '13px', opacity: 0.7 }}>O PROJEKTU</a>
+          <a href="#apartments" style={{ color: 'white', textDecoration: 'none', fontSize: '13px', opacity: 0.7 }}>APARTMÁNY</a>
+          <a href="#location" style={{ color: 'white', textDecoration: 'none', fontSize: '13px', opacity: 0.7 }}>LOKALITA</a>
+          <a href="#contact" style={{ color: 'white', textDecoration: 'none', fontSize: '13px', opacity: 0.7 }}>KONTAKT</a>
           <button style={{
             background: '#22c55e',
             color: 'white',
@@ -95,7 +108,7 @@ export default function Home() {
       <div style={{
         position: 'relative',
         height: '100vh',
-        backgroundImage: 'linear-gradient(rgba(10, 15, 22, 0.6), rgba(10, 15, 22, 0.9)), url("https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&q=80&w=2000")',
+        backgroundImage: `linear-gradient(rgba(10, 15, 22, 0.4), rgba(10, 15, 22, 0.8)), url("/images/frame_0125.jpg")`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         display: 'flex',
@@ -122,32 +135,40 @@ export default function Home() {
       {/* Content Sections */}
       <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '80px 20px' }}>
         <section id="about" style={{ marginBottom: '100px' }}>
-          <h2 style={{ fontSize: '2em', marginBottom: '20px', color: '#22c55e' }}>O Projektu</h2>
-          <p style={{ fontSize: '1.1em', lineHeight: '1.8', opacity: 0.8 }}>
+          <h2 style={{ fontSize: '2.5em', marginBottom: '30px', color: '#22c55e' }}>O Projektu</h2>
+          <p style={{ fontSize: '1.2em', lineHeight: '1.8', opacity: 0.8 }}>
             Lojzovy Paseky je unikátní projekt moderních bungalovů v srdci Šumavy u Lipna nad Vltavou. 
             Kombinuje luxusní bydlení s přírodou a nabízí ideální podmínky pro rodiny, digitální nomády i investory.
           </p>
         </section>
 
         <section id="apartments" style={{ marginBottom: '100px' }}>
-          <h2 style={{ fontSize: '2em', marginBottom: '20px', color: '#22c55e' }}>Apartmány</h2>
-          <p style={{ fontSize: '1.1em', lineHeight: '1.8', opacity: 0.8 }}>
+          <h2 style={{ fontSize: '2.5em', marginBottom: '30px', color: '#22c55e' }}>Apartmány & Galerie</h2>
+          
+          {/* Simple Gallery Slider */}
+          <div style={{ position: 'relative', width: '100%', height: '500px', borderRadius: '15px', overflow: 'hidden', marginBottom: '40px', border: '1px solid rgba(255,255,255,0.1)' }}>
+            <img src={galleryImages[currentImageIndex]} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Apartmán" />
+            <button onClick={prevImage} style={{ position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,0.5)', color: 'white', border: 'none', padding: '10px', borderRadius: '50%', cursor: 'pointer' }}><ChevronLeft /></button>
+            <button onClick={nextImage} style={{ position: 'absolute', right: '20px', top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,0.5)', color: 'white', border: 'none', padding: '10px', borderRadius: '50%', cursor: 'pointer' }}><ChevronRight /></button>
+          </div>
+
+          <p style={{ fontSize: '1.2em', lineHeight: '1.8', opacity: 0.8 }}>
             Naše apartmány jsou navrženy s důrazem na komfort a moderní design. 
             Každý bungalov nabízí výhled na přírodu a přímý přístup k lesu.
           </p>
         </section>
 
         <section id="location" style={{ marginBottom: '100px' }}>
-          <h2 style={{ fontSize: '2em', marginBottom: '20px', color: '#22c55e' }}>Lokalita</h2>
-          <p style={{ fontSize: '1.1em', lineHeight: '1.8', opacity: 0.8 }}>
+          <h2 style={{ fontSize: '2.5em', marginBottom: '30px', color: '#22c55e' }}>Lokalita</h2>
+          <p style={{ fontSize: '1.2em', lineHeight: '1.8', opacity: 0.8 }}>
             Lipno nad Vltavou je ideální destinace pro odpočinek a aktivní trávení volného času. 
             Blízkost přírody, vodních sportů a kulturních atraktivit.
           </p>
         </section>
 
         <section id="contact">
-          <h2 style={{ fontSize: '2em', marginBottom: '20px', color: '#22c55e' }}>Kontakt</h2>
-          <p style={{ fontSize: '1.1em', lineHeight: '1.8', opacity: 0.8 }}>
+          <h2 style={{ fontSize: '2.5em', marginBottom: '30px', color: '#22c55e' }}>Kontakt</h2>
+          <p style={{ fontSize: '1.2em', lineHeight: '1.8', opacity: 0.8 }}>
             Email: <a href="mailto:info@lojzovypaseky.life" style={{ color: '#22c55e', textDecoration: 'none' }}>info@lojzovypaseky.life</a>
           </p>
         </section>
