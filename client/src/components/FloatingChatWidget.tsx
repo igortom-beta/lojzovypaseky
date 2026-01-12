@@ -1,13 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, X, MessageCircle } from 'lucide-react';
-import { trpc } from '@/lib/trpc';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { Streamdown } from 'streamdown';
 
 interface Message {
-  role: 'user' | 'assistant';
+  role: 'user' | 'assistant' | 'system';
   content: string;
 }
 
@@ -18,7 +17,6 @@ export function FloatingChatWidget() {
   const [isLoading, setIsLoading] = useState(false);
   const [detectedLanguage, setDetectedLanguage] = useState('cs');
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const chatMutation = trpc.ai.chat.useMutation();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -28,7 +26,6 @@ export function FloatingChatWidget() {
     scrollToBottom();
   }, [messages]);
 
-  // Detect language from user input - supports 7 languages
   const detectLanguage = (text: string): string => {
     const languageKeywords: Record<string, string[]> = {
       cs: ['ahoj', 'jak', 'co', 'kde', 'kdy', 'proč', 'cena', 'nájem', 'bungalov', 'pronájem', 'rezervace', 'kolik', 'stojí', 'měsíc'],
@@ -50,47 +47,82 @@ export function FloatingChatWidget() {
     });
 
     const maxScore = Math.max(...Object.values(scores));
-    if (maxScore > 0) {
-      return Object.keys(scores).find(key => scores[key as keyof typeof scores] === maxScore) || 'cs';
-    }
-
-    // Default to Czech
-    return 'cs';
+    return maxScore > 0 ? Object.keys(scores).find(key => scores[key] === maxScore) || 'cs' : 'cs';
   };
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (!inputValue.trim()) return;
 
     const userMessage = inputValue;
     const language = detectLanguage(userMessage);
     setDetectedLanguage(language);
     
-    setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+    const newMessages: Message[] = [...messages, { role: 'user', content: userMessage }];
+    setMessages(newMessages);
     setInputValue('');
     setIsLoading(true);
 
     try {
-      const response = await chatMutation.mutateAsync({
-        messages: [
-          ...messages,
-          { role: 'user', content: userMessage },
-        ],
-        language,
+      // System prompt with all the "smart" information
+      const systemPrompt = `You are a friendly and professional assistant for renting modern bungalows in Lojzovy Paseky, Lipno.
+      
+      Property Information:
+      - Location: Lojzovy Paseky, Lipno nad Vltavou, Czech Republic.
+      - Type: Modern bungalows with large glass walls and nature views.
+      - Rental: Long-term (monthly) and short-term available.
+      - Target audience: Families, digital nomads, investors.
+      
+      Pricing:
+      - Base rent: 24,000 CZK/month.
+      - Security deposit: 2 months rent (48,000 CZK).
+      - Utilities: Included in the price or specified upon request.
+      - Exchange rate: Use approx 25 CZK = 1 EUR if not specified.
+      
+      Instructions:
+      1. Communicate in the user's language (Czech, German, English, Croatian, Italian, French, Spanish).
+      2. Be professional, friendly, and sales-oriented.
+      3. Offer booking via email: info@lojzovypaseky.life.
+      4. If asked about viewing, suggest contacting the owner via email.`;
+
+      // Direct call to OpenAI API (using the key from environment variables via Vite)
+      // Note: In a production environment, it's better to use a proxy, but for this specific setup, 
+      // we'll use the key provided in the environment.
+      const apiKey = (import.meta as any).env.VITE_OPENAI_API_KEY || (import.meta as any).env.OPENAI_API_KEY;
+      
+      if (!apiKey) {
+        throw new Error("API Key not found");
+      }
+
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          model: "gpt-4o-mini",
+          messages: [
+            { role: 'system', content: systemPrompt },
+            ...newMessages
+          ],
+          temperature: 0.7
+        })
       });
 
-      setMessages(prev => [...prev, { role: 'assistant', content: response.message }]);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error?.message || "Failed to fetch from OpenAI");
+      }
+
+      const data = await response.json();
+      const assistantMessage = data.choices[0].message.content;
+      setMessages(prev => [...prev, { role: 'assistant', content: assistantMessage }]);
     } catch (error) {
       console.error('Chat error:', error);
       const errorMessages: Record<string, string> = {
-        cs: 'Omlouvám se, došlo k chybě. Prosím zkuste to znovu.',
-        de: 'Entschuldigung, ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.',
-        en: 'Sorry, an error occurred. Please try again.',
-        hr: 'Izvinjavam se, došlo je do greške. Molim pokušajte ponovno.',
-        it: 'Mi scusi, si è verificato un errore. Per favore riprova.',
-        fr: 'Désolé, une erreur est survenue. Veuillez réessayer.',
-        es: 'Lo siento, ocurrió un error. Por favor, inténtelo de nuevo.',
+        cs: 'Omlouvám se, došlo k chybě. Zkontrolujte prosím nastavení API klíče na Vercelu.',
+        en: 'Sorry, an error occurred. Please check the API key settings on Vercel.',
       };
       setMessages(prev => [...prev, { 
         role: 'assistant', 
@@ -103,7 +135,7 @@ export function FloatingChatWidget() {
 
   const getWelcomeMessage = (): string => {
     const messages: Record<string, string> = {
-      cs: 'Vítejte v Lojzových Pasekách! 👋 Jak vám mohu pomoci?',
+      cs: 'Vítejte v Lojzových Pasekách! 👋 Jsem váš chytrý asistent. Jak vám mohu pomoci?',
       de: 'Willkommen in Lojzovy Paseky! 👋 Wie kann ich dir helfen?',
       en: 'Welcome to Lojzovy Paseky! 👋 How can I help you?',
       hr: 'Dobrodošli u Lojzove Paseky! 👋 Kako ti mogu pomoći?',
@@ -119,7 +151,7 @@ export function FloatingChatWidget() {
       {/* Booking Button */}
       <div className="fixed bottom-32 right-6 z-40">
         <Button 
-          className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg"
+          className="bg-[#22c55e] hover:bg-[#16a34a] text-white font-bold py-3 px-6 rounded-lg shadow-lg"
           onClick={() => window.location.href = 'mailto:info@lojzovypaseky.life?subject=Rezervace'}
         >
           REZERVOVAT TEĎ
@@ -129,7 +161,7 @@ export function FloatingChatWidget() {
       {/* Chat Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-50 bg-[#1a3a5f] text-white p-4 rounded-full shadow-lg hover:bg-[#0f2540] transition-colors"
+        className="fixed bottom-6 right-6 z-50 bg-[#22c55e] text-white p-4 rounded-full shadow-lg hover:bg-[#16a34a] transition-colors"
         aria-label="Toggle chat"
       >
         {isOpen ? <X size={24} /> : <MessageCircle size={24} />}
@@ -137,11 +169,11 @@ export function FloatingChatWidget() {
 
       {/* Chat Window */}
       {isOpen && (
-        <Card className="fixed bottom-24 right-6 w-96 max-w-[calc(100vw-24px)] h-96 max-h-[calc(100vh-200px)] flex flex-col bg-white border-2 border-[#1a3a5f] shadow-2xl rounded-lg z-50">
+        <Card className="fixed bottom-24 right-6 w-96 max-w-[calc(100vw-24px)] h-[500px] max-h-[calc(100vh-200px)] flex flex-col bg-white border-2 border-[#22c55e] shadow-2xl rounded-lg z-50 overflow-hidden">
           {/* Header */}
-          <div className="bg-[#1a3a5f] text-white p-4 rounded-t-lg">
-            <h3 className="font-bold text-lg">Lojzovy Paseky Assistant</h3>
-            <p className="text-sm text-gray-200">Modern bungalows at Lipno</p>
+          <div className="bg-[#22c55e] text-white p-4">
+            <h3 className="font-bold text-lg">Lojzovy Paseky AI</h3>
+            <p className="text-sm opacity-90">Online | Připraven pomoci</p>
           </div>
 
           {/* Messages */}
@@ -152,20 +184,22 @@ export function FloatingChatWidget() {
               </div>
             )}
             
-            {messages.map((msg, idx) => (
+            {messages.filter(m => m.role !== 'system').map((msg, idx) => (
               <div
                 key={idx}
                 className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={`max-w-xs px-4 py-2 rounded-lg ${
+                  className={`max-w-[85%] px-4 py-2 rounded-lg ${
                     msg.role === 'user'
                       ? 'bg-[#1a3a5f] text-white rounded-br-none'
-                      : 'bg-white text-gray-800 border border-[#1a3a5f] rounded-bl-none'
+                      : 'bg-white text-gray-800 border border-gray-200 rounded-bl-none shadow-sm'
                   }`}
                 >
                   {msg.role === 'assistant' ? (
-                    <Streamdown>{msg.content}</Streamdown>
+                    <div className="text-sm prose prose-sm max-w-none">
+                      <Streamdown>{msg.content}</Streamdown>
+                    </div>
                   ) : (
                     <p className="text-sm">{msg.content}</p>
                   )}
@@ -175,11 +209,11 @@ export function FloatingChatWidget() {
             
             {isLoading && (
               <div className="flex justify-start">
-                <div className="bg-white text-gray-800 border border-[#1a3a5f] px-4 py-2 rounded-lg rounded-bl-none">
+                <div className="bg-white text-gray-800 border border-gray-200 px-4 py-2 rounded-lg rounded-bl-none shadow-sm">
                   <div className="flex space-x-2">
-                    <div className="w-2 h-2 bg-[#1a3a5f] rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-[#1a3a5f] rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                    <div className="w-2 h-2 bg-[#1a3a5f] rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                    <div className="w-2 h-2 bg-[#22c55e] rounded-full animate-bounce"></div>
+                    <div className="w-2 h-2 bg-[#22c55e] rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                    <div className="w-2 h-2 bg-[#22c55e] rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                   </div>
                 </div>
               </div>
@@ -189,18 +223,18 @@ export function FloatingChatWidget() {
           </div>
 
           {/* Input */}
-          <form onSubmit={handleSendMessage} className="border-t border-[#1a3a5f] p-4 bg-white rounded-b-lg flex gap-2">
+          <form onSubmit={handleSendMessage} className="border-t border-gray-100 p-4 bg-white flex gap-2">
             <Input
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              placeholder="Type a message..."
-              className="flex-1 border-[#1a3a5f] focus:border-[#1a3a5f] focus:ring-[#1a3a5f]"
+              placeholder="Napište nám..."
+              className="flex-1 border-gray-200 focus:border-[#22c55e] focus:ring-[#22c55e]"
               disabled={isLoading}
             />
             <Button
               type="submit"
               disabled={isLoading || !inputValue.trim()}
-              className="bg-[#1a3a5f] hover:bg-[#0f2540] text-white"
+              className="bg-[#22c55e] hover:bg-[#16a34a] text-white"
             >
               <Send size={18} />
             </Button>
