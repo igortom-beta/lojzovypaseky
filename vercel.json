@@ -1,18 +1,16 @@
 {
+  "version": 2,
   "buildCommand": "pnpm build",
   "outputDirectory": "dist",
   "framework": "vite",
-
-
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/trpc/(.*)",
-      "dest": "/server/_core/index.ts",
-      "methods": ["GET", "POST", "PUT", "DELETE", "PATCH"]
+      "source": "/api/trpc/(.*)",
+      "destination": "/api/trpc"
     },
     {
-      "src": "/(.*)",
-      "dest": "/client/index.html"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
