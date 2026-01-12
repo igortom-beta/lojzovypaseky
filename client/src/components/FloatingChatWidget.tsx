@@ -88,7 +88,7 @@ export function FloatingChatWidget() {
       // Direct call to OpenAI API (using the key from environment variables via Vite)
       // Note: In a production environment, it's better to use a proxy, but for this specific setup, 
       // we'll use the key provided in the environment.
-      const apiKey = (import.meta as any).env.VITE_OPENAI_API_KEY || (import.meta as any).env.OPENAI_API_KEY || (window as any).VITE_OPENAI_API_KEY;
+      const apiKey = "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";
       
       if (!apiKey) {
         throw new Error("API Key not found");
