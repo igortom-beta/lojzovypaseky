@@ -1,12 +1,46 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <title>Lojzovy Paseky AI Assistant</title>    
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lojzovy Paseky | Luxusní apartmány Šumava</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #000; color: #fff; margin: 0; }
+        .font-serif { font-family: 'Playfair Display', serif; }
+    </style>
+</head>
+<body>
+    <nav class="fixed top-0 w-full z-50 bg-black/40 backdrop-blur-md border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="text-xl font-bold tracking-tighter uppercase">LOJZOVY PASEKY</div>
+            <div class="hidden md:flex items-center gap-8 text-[10px] font-bold tracking-widest uppercase">
+                <a href="#" class="hover:text-green-500 transition-colors">O projektu</a>
+                <a href="#" class="hover:text-green-500 transition-colors">Apartmány</a>
+                <a href="#" class="hover:text-green-500 transition-colors">Lokalita</a>
+                <a href="#" class="hover:text-green-500 transition-colors">Kontakt</a>
+                <button class="bg-[#22c55e] text-white px-6 py-2 rounded-full hover:bg-green-600 transition-all">Rezervovat</button>
+            </div>
+        </div>
+    </nav>
+
+    <section class="relative h-screen flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black z-10"></div>
+            <img src="https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&q=80&w=2000" class="w-full h-full object-cover" alt="Šumava">
+        </div>
+        <div class="relative z-20 text-center px-6">
+            <span class="text-[#22c55e] font-bold tracking-[0.4em] uppercase text-[10px] mb-6 block opacity-80">Váš druhý domov v srdci Šumavy</span>
+            <h1 class="text-6xl md:text-9xl font-serif mb-8 tracking-tight">Lojzovy Paseky</h1>
+            <p class="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto font-light italic leading-relaxed">
+                Kde se moderní architektura potkává s tichem lesů.  
+Investice do klidu, který trvá.
+            </p>
+        </div>
+    </section>
+
+    <div id="ai-chat-root"></div>
+    <script src="chat.js"></script>
+</body>
 </html>
