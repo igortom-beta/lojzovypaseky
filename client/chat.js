@@ -31,28 +31,20 @@ toggle.onclick = () => { windowEl.style.display = 'flex'; toggle.style.display =
 close.onclick = () => { windowEl.style.display = 'none'; toggle.style.display = 'block'; };
 
 async function askAI(text) {
-    const userMsg = document.createElement('div');
-    userMsg.style.cssText = "background: #22c55e; padding: 10px; border-radius: 15px; font-size: 13px; align-self: flex-end; color: white;";
-    userMsg.innerText = text;
-    messages.appendChild(userMsg);
-    messages.scrollTop = messages.scrollHeight;
-
+    // ... (přidání zprávy uživatele do seznamu)
     try {
-        const res = await fetch('https://api.openai.com/v1/chat/completions', {
+        const res = await fetch('/api/chat', { // Voláme naši bezpečnou bránu, ne přímo OpenAI
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${OPENAI_KEY}` },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                model: 'gpt-4o-mini',
-                messages: [{ role: 'system', content: 'Jsi asistent pro luxusní apartmány Lojzovy Paseky na Šumavě. Odpovídej profesionálně v češtině.' }, { role: 'user', content: text }]
-            } )
+                messages: [{ role: 'user', content: text }]
+            })
         });
         const data = await res.json();
-        const aiMsg = document.createElement('div');
-        aiMsg.style.cssText = "background: rgba(255,255,255,0.1); padding: 10px; border-radius: 15px; font-size: 13px; align-self: flex-start; color: white;";
-        aiMsg.innerText = data.choices[0].message.content;
-        messages.appendChild(aiMsg);
-        messages.scrollTop = messages.scrollHeight;
+        // ... (zobrazení odpovědi AI)
     } catch (e) { console.error(e); }
+}
+
 }
 
 send.onclick = () => { if(input.value) { askAI(input.value); input.value = ''; } };
