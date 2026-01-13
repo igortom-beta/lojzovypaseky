@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MessageCircle, X, Send, Mic, MicOff, Loader2 } from 'lucide-react';
-import { trpc } from '@/lib/trpc';
+import { trpc } from '../utils/trpc';
 
 interface Message {
   role: 'user' | 'assistant';
