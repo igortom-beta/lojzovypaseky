@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageCircle, X, Send, Mic, Loader2 } from 'lucide-react';
-import { trpc } from '../utils/trpc';
+import { MessageCircle, X, Send, Mic, MicOff, Loader2 } from 'lucide-react';
+import { trpc } from '@/lib/trpc';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -17,7 +17,6 @@ export const FloatingChatWidget: React.FC = () => {
   const [isRecording, setIsRecording] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Propojení na váš serverless backend přes tRPC
   const chatMutation = trpc.ai.chat.useMutation({
     onSuccess: (data) => {
       setMessages(prev => [...prev, { role: 'assistant', content: data.message }]);
@@ -40,13 +39,10 @@ export const FloatingChatWidget: React.FC = () => {
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
-
     const userMessage: Message = { role: 'user', content: input };
     setMessages(prev => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
-
-    // Odeslání zprávy na server (GPT-4 mini)
     chatMutation.mutate({
       messages: [...messages, userMessage].map(m => ({
         role: m.role,
@@ -126,7 +122,7 @@ export const FloatingChatWidget: React.FC = () => {
                 onClick={startRecording}
                 className={`p-2 rounded-xl transition-colors ${isRecording ? 'bg-red-100 text-red-600' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'}`}
               >
-                <Mic size={20} />
+                {isRecording ? <MicOff size={20} /> : <Mic size={20} />}
               </button>
               <button
                 onClick={handleSend}
