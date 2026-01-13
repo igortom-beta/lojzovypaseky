@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MessageCircle, X, Send, Mic, Loader2 } from 'lucide-react';
+import { trpc } from '../utils/trpc';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -15,6 +16,19 @@ export const FloatingChatWidget: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Propojení na váš serverless backend přes tRPC
+  const chatMutation = trpc.ai.chat.useMutation({
+    onSuccess: (data) => {
+      setMessages(prev => [...prev, { role: 'assistant', content: data.message }]);
+      setIsLoading(false);
+    },
+    onError: (error) => {
+      console.error('Chat error:', error);
+      setMessages(prev => [...prev, { role: 'assistant', content: 'Omlouvám se, došlo k chybě při spojení se serverem.' }]);
+      setIsLoading(false);
+    }
+  });
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -32,33 +46,13 @@ export const FloatingChatWidget: React.FC = () => {
     setInput('');
     setIsLoading(true);
 
-    try {
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
-        },
-        body: JSON.stringify({
-          model: 'gpt-4o-mini',
-          messages: [
-            { role: 'system', content: 'Jste asistent pro rekreační objekt Lojzovy Paseky. Odpovídejte stručně a přátelsky.' },
-            ...messages,
-            userMessage
-          ].map(m => ({ role: m.role, content: m.content } )),
-        }),
-      });
-
-      const data = await response.json();
-      if (data.choices?.[0]?.message) {
-        setMessages(prev => [...prev, { role: 'assistant', content: data.choices[0].message.content }]);
-      }
-    } catch (error) {
-      console.error('Chat error:', error);
-      setMessages(prev => [...prev, { role: 'assistant', content: 'Omlouvám se, došlo k chybě při spojení.' }]);
-    } finally {
-      setIsLoading(false);
-    }
+    // Odeslání zprávy na server (GPT-4 mini)
+    chatMutation.mutate({
+      messages: [...messages, userMessage].map(m => ({
+        role: m.role,
+        content: m.content
+      }))
+    });
   };
 
   const startRecording = () => {
@@ -66,7 +60,6 @@ export const FloatingChatWidget: React.FC = () => {
       alert('Váš prohlížeč nepodporuje rozpoznávání hlasu.');
       return;
     }
-
     const recognition = new (window as any).webkitSpeechRecognition();
     recognition.lang = 'cs-CZ';
     recognition.onstart = () => setIsRecording(true);
